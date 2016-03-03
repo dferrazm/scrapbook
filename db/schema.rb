@@ -17,6 +17,15 @@ ActiveRecord::Schema.define(version: 20160303220307) do
     t.string "description"
   end
 
+  create_table "scrapnotes", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "humour_id"
+    t.string  "content"
+  end
+
+  add_index "scrapnotes", ["humour_id"], name: "index_scrapnotes_on_humour_id"
+  add_index "scrapnotes", ["user_id"], name: "index_scrapnotes_on_user_id"
+
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at"
