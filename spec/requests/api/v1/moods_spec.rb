@@ -15,10 +15,15 @@ describe 'Moods API V1' do
 
   describe 'show' do
     it 'returns the mood' do
-      moods_json = json_get "/api/v1/moods/#{mood.id}"
+      mood_json = json_get "/api/v1/moods/#{mood.id}"
 
       expect(response.status).to eq 200
-      expect(moods_json).to eq mood_as_json
+      expect(mood_json).to eq mood_as_json
+    end
+
+    it 'returns Not Found when record not found' do
+      get '/api/v1/moods/123'
+      expect(response.status).to eq 404
     end
   end
 
