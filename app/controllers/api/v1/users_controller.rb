@@ -5,6 +5,10 @@ module Api
         render :index, locals: { users: User.all }
       end
 
+      def show
+        respond_with(user)
+      end
+
       def create
         user = User.new(user_params)
         save_and_respond(user)
@@ -31,10 +35,14 @@ module Api
 
       def save_and_respond(user)
         if user.save
-          render partial: 'user', locals: { user: user }
+          respond_with(user)
         else
           render json: user.errors.messages, status: 400
         end
+      end
+
+      def respond_with(user)
+        render partial: 'user', locals: { user: user }
       end
     end
   end

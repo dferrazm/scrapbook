@@ -13,6 +13,20 @@ describe 'Users API V1' do
     end
   end
 
+  describe 'show' do
+    it 'returns the user' do
+      user_json = json_get "/api/v1/users/#{user.id}"
+
+      expect(response.status).to eq 200
+      expect(user_json).to eq user_as_json
+    end
+
+    it 'returns Not Found when record not found' do
+      get '/api/v1/users/123'
+      expect(response.status).to eq 404
+    end
+  end
+
   describe 'create' do
     context 'valid user' do
       let(:user) { User.last }
