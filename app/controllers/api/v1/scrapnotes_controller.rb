@@ -1,52 +1,24 @@
 module Api
   module V1
-    class ScrapnotesController < ApplicationController
-      def index
-        render :index, locals: { scrapnotes: current_user.scrapnotes }
-      end
+    class ScrapnotesController < BaseController
+      include Api::CRUD
 
-      def show
-        respond_with(scrapnote)
-      end
-
-      def create
-        scrapnote = current_user.scrapnotes.build(scrapnote_params)
-        save_and_respond(scrapnote)
-      end
-
-      def update
-        scrapnote.assign_attributes(scrapnote_params)
-        save_and_respond(scrapnote)
-      end
-
-      def destroy
-        render partial: 'scrapnote', locals: { scrapnote: scrapnote.destroy }
-      end
+      before_action :authorize_user
 
       private
 
-      def current_user
-        @current_user ||= User.find(params[:user_id])
-      end
-
-      def scrapnote
-        @scrapnote ||= current_user.scrapnotes.find(params[:id])
-      end
-
-      def scrapnote_params
-        params.require(:scrapnote).permit(:content, :humour_id)
-      end
-
-      def save_and_respond(scrapnote)
-        if scrapnote.save
-          respond_with(scrapnote)
-        else
-          render json: scrapnote.errors.messages, status: 400
+      def authorize_user
+        if params[:user_id] != current_user.id.to_s
+          raise Api::Errors::Forbidden
         end
       end
 
-      def respond_with(scrapnote)
-        render partial: 'scrapnote', locals: { scrapnote: scrapnote }
+      def records_collection
+        current_user.scrapnotes
+      end
+
+      def permitted_params
+        params.require(:scrapnote).permit(:content, :humour_id).merge(user: current_user)
       end
     end
   end

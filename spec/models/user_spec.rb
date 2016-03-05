@@ -4,8 +4,12 @@ describe User do
   end
 
   describe 'validations' do
-    it 'is invalid without a name' do
-      expect(build :user, name: nil).to_not be_valid
+    it 'is invalid without a username' do
+      expect(build :user, username: nil).to_not be_valid
+    end
+
+    it 'is invalid without a password' do
+      expect(build :user, password: nil).to_not be_valid
     end
   end
 end

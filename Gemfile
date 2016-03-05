@@ -6,6 +6,8 @@ gem 'rails', '4.2.5'
 gem 'sqlite3'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
+# Used to handle user passwords
+gem 'bcrypt', '~> 3.1.7'
 
 group :development, :test do
   gem 'pry-byebug'
