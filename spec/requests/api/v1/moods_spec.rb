@@ -53,7 +53,7 @@ describe 'Moods API V1' do
 
   describe 'update' do
     context 'with valid parameters' do
-      it 'creates the mood and returns it' do
+      it 'updates the mood and returns it' do
         mood_json = json_put "/api/v1/moods/#{mood.id}", mood: { description: 'Happy' }
         mood.reload
 

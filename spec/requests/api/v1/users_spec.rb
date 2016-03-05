@@ -53,7 +53,7 @@ describe 'Users API V1' do
 
   describe 'update' do
     context 'with valid parameters' do
-      it 'creates the user and returns it' do
+      it 'updates the user and returns it' do
         user_json = json_put "/api/v1/users/#{user.id}", user: { name: 'Batman' }
         user.reload
 
