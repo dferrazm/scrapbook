@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160303220307) do
+ActiveRecord::Schema.define(version: 20160305144627) do
 
   create_table "moods", force: :cascade do |t|
     t.string "description"
@@ -19,11 +19,11 @@ ActiveRecord::Schema.define(version: 20160303220307) do
 
   create_table "scrapnotes", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "humour_id"
+    t.integer "mood_id"
     t.string  "content"
   end
 
-  add_index "scrapnotes", ["humour_id"], name: "index_scrapnotes_on_humour_id"
+  add_index "scrapnotes", ["mood_id"], name: "index_scrapnotes_on_mood_id"
   add_index "scrapnotes", ["user_id"], name: "index_scrapnotes_on_user_id"
 
   create_table "users", force: :cascade do |t|
