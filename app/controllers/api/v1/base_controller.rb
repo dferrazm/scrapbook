@@ -1,7 +1,7 @@
 module Api
   module V1
     class BaseController < ApplicationController
-      include ::Authenticable
+      include Api::Authenticable
 
       rescue_from ActiveRecord::RecordNotFound do
         render nothing: true, status: 404
