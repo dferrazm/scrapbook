@@ -1,5 +1,5 @@
 module Api
-  module Authenticable
+  module Authentication
     extend ActiveSupport::Concern
 
     included do
@@ -12,7 +12,7 @@ module Api
 
     def authenticate
       authenticate_with_http_basic(&method(:authenticate_user))
-      render nothing: true, status: 401 unless current_user
+      raise Api::Errors::Unauthorized unless current_user
     end
 
     def authenticate_user(user, password)

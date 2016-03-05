@@ -3,7 +3,15 @@ module Api
     class ScrapnotesController < BaseController
       include Api::CRUD
 
+      before_action :authorize_user
+
       private
+
+      def authorize_user
+        if params[:user_id] != current_user.id.to_s
+          raise Api::Errors::Forbidden
+        end
+      end
 
       def records_collection
         current_user.scrapnotes
