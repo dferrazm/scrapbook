@@ -1,6 +1,6 @@
 module Api
   module V1
-    class UsersController < ApplicationController
+    class UsersController < BaseController
       def index
         render :index, locals: { users: User.all }
       end
@@ -30,7 +30,7 @@ module Api
       end
 
       def user_params
-        params.require(:user).permit(:name)
+        params.require(:user).permit(:username, :password)
       end
 
       def save_and_respond(user)

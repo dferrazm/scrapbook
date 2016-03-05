@@ -1,10 +1,11 @@
 describe 'Users API V1' do
-  let(:user) { create :user, name: 'John Doe' }
-  let(:user_as_json) { user.attributes.slice("id", "name") }
+  let(:user) { signed_user }
+  let(:user_as_json) { user.attributes.slice("id", "username") }
+  let(:signed_user) { create :user, username: 'jdoe' }
+
+  before { http_auth(signed_user) }
 
   describe 'index' do
-    before { user }
-
     it 'returns all the users' do
       users_json = json_get '/api/v1/users'
 
@@ -22,7 +23,7 @@ describe 'Users API V1' do
     end
 
     it 'returns Not Found when record not found' do
-      get '/api/v1/users/123'
+      json_get '/api/v1/users/123'
       expect(response.status).to eq 404
     end
   end
@@ -33,7 +34,7 @@ describe 'Users API V1' do
 
       it 'creates the user and returns it' do
         expect do
-          user_json = json_post '/api/v1/users', user: { name: 'John Doe' }
+          user_json = json_post '/api/v1/users', user: { username: 'foobar', password: 'change123' }
 
           expect(response.status).to eq 200
           expect(user_json).to eq user_as_json
@@ -43,10 +44,10 @@ describe 'Users API V1' do
 
     context 'invalid user' do
       it 'returns the error messages' do
-        error_json = json_post '/api/v1/users', user: { name: '' }
+        error_json = json_post '/api/v1/users', user: { username: '' }
 
         expect(response.status).to eq 400
-        expect(error_json).to include('name' => ["can't be blank"])
+        expect(error_json).to include('username' => ["can't be blank"])
       end
     end
   end
@@ -54,28 +55,26 @@ describe 'Users API V1' do
   describe 'update' do
     context 'with valid parameters' do
       it 'updates the user and returns it' do
-        user_json = json_put "/api/v1/users/#{user.id}", user: { name: 'Batman' }
+        user_json = json_put "/api/v1/users/#{user.id}", user: { username: 'foobar' }
         user.reload
 
         expect(response.status).to eq 200
         expect(user_json).to eq user_as_json
-        expect(user.name).to eq 'Batman'
+        expect(user.username).to eq 'foobar'
       end
     end
 
     context 'with invalid parameters' do
       it 'returns the error messages' do
-        error_json = json_put "/api/v1/users/#{user.id}", user: { name: '' }
+        error_json = json_put "/api/v1/users/#{user.id}", user: { username: '' }
 
         expect(response.status).to eq 400
-        expect(error_json).to include('name' => ["can't be blank"])
+        expect(error_json).to include('username' => ["can't be blank"])
       end
     end
   end
 
   describe 'destroy' do
-    before { user }
-
     it 'destroys the user and return it' do
       expect do
         user_json = json_delete "/api/v1/users/#{user.id}"

@@ -4,6 +4,8 @@ describe 'Scrapnotes API V1' do
   let(:another_user_note) { create :scrapnote }
   let(:note_as_json) { note.attributes.slice("id", "content", "mood_id") }
 
+  before { http_auth(user) }
+
   describe 'index' do
     before { note; another_user_note }
 
@@ -24,7 +26,7 @@ describe 'Scrapnotes API V1' do
     end
 
     it 'returns Not Found when record not found' do
-      get "/api/v1/users/#{user.id}/scrapnotes/#{another_user_note.id}"
+      json_get "/api/v1/users/#{user.id}/scrapnotes/#{another_user_note.id}"
       expect(response.status).to eq 404
     end
   end

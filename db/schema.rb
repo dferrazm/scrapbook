@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160305144627) do
+ActiveRecord::Schema.define(version: 20160305182106) do
 
   create_table "moods", force: :cascade do |t|
     t.string "description"
@@ -27,9 +27,10 @@ ActiveRecord::Schema.define(version: 20160305144627) do
   add_index "scrapnotes", ["user_id"], name: "index_scrapnotes_on_user_id"
 
   create_table "users", force: :cascade do |t|
-    t.string   "name"
+    t.string   "username"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "password_digest"
   end
 
 end

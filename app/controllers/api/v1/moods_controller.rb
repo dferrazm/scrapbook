@@ -1,6 +1,6 @@
 module Api
   module V1
-    class MoodsController < ApplicationController
+    class MoodsController < BaseController
       def index
         render :index, locals: { moods: Mood.all }
       end

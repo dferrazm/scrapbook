@@ -1,6 +1,6 @@
 module Api
   module V1
-    class ScrapnotesController < ApplicationController
+    class ScrapnotesController < BaseController
       def index
         render :index, locals: { scrapnotes: current_user.scrapnotes }
       end
@@ -24,10 +24,6 @@ module Api
       end
 
       private
-
-      def current_user
-        @current_user ||= User.find(params[:user_id])
-      end
 
       def scrapnote
         @scrapnote ||= current_user.scrapnotes.find(params[:id])

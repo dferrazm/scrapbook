@@ -2,6 +2,8 @@ describe 'Moods API V1' do
   let(:mood) { create :mood, description: 'Sad' }
   let(:mood_as_json) { mood.attributes.slice("id", "description") }
 
+  before { http_auth }
+
   describe 'index' do
     before { mood }
 
@@ -22,7 +24,7 @@ describe 'Moods API V1' do
     end
 
     it 'returns Not Found when record not found' do
-      get '/api/v1/moods/123'
+      json_get '/api/v1/moods/123'
       expect(response.status).to eq 404
     end
   end
