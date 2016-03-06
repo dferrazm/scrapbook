@@ -3,18 +3,14 @@ module Api
     class ScrapnotesController < BaseController
       include Api::CRUD
 
-      before_action :authorize_user
+      before_action :authorize_user_from_params, except: [:index, :show]
 
       private
 
-      def authorize_user
-        if params[:user_id] != current_user.id.to_s
+      def authorize_user_from_params
+        if (params[:user_id] != current_user.id.to_s) && !current_user.admin?
           raise Api::Errors::Forbidden
         end
-      end
-
-      def records_collection
-        current_user.scrapnotes
       end
 
       def permitted_params

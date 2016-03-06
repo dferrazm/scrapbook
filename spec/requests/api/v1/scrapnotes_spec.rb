@@ -1,15 +1,15 @@
 describe 'Scrapnotes API V1' do
   let(:user) { create :user }
   let(:user_id) { user.id }
+  let(:signed_user) { user }
   let(:note) { create :scrapnote, content: 'Hello world!', mood: build(:mood), user: user }
-  let(:another_user_note) { create :scrapnote }
   let(:note_as_json) { note.attributes.slice("id", "content", "mood_id") }
 
-  before { http_auth(user) }
+  before { http_auth(signed_user) }
 
   shared_examples 'accessing_another_user_resources' do
     context 'when given user id does not match the signed in user' do
-      let(:user_id) { another_user_note.user.id }
+      let(:user_id) { 35435 }
 
       it 'returns unauthorized' do
         perform_request
@@ -19,8 +19,8 @@ describe 'Scrapnotes API V1' do
   end
 
   describe 'index' do
-    before { note; another_user_note }
-    subject(:perform_request) { json_get "/api/v1/users/#{user_id}/scrapnotes" }
+    before { note }
+    subject(:perform_request) { json_get "/api/v1/scrapnotes" }
 
     it 'returns all the scrapnotes' do
       notes_json = perform_request
@@ -28,13 +28,11 @@ describe 'Scrapnotes API V1' do
       expect(response.status).to eq 200
       expect(notes_json).to eq [note_as_json]
     end
-
-    include_examples 'accessing_another_user_resources'
   end
 
   describe 'show' do
     let(:note_id) { note.id }
-    subject(:perform_request) { json_get "/api/v1/users/#{user_id}/scrapnotes/#{note_id}" }
+    subject(:perform_request) { json_get "/api/v1/scrapnotes/#{note_id}" }
 
     it 'returns the scrapnote' do
       note_json = perform_request
@@ -44,15 +42,13 @@ describe 'Scrapnotes API V1' do
     end
 
     context 'when record not found' do
-      let(:note_id) { another_user_note.id }
+      let(:note_id) { 12414 }
 
       it 'returns Not Found ' do
         perform_request
         expect(response.status).to eq 404
       end
     end
-
-    include_examples 'accessing_another_user_resources'
   end
 
   describe 'create' do
@@ -86,19 +82,30 @@ describe 'Scrapnotes API V1' do
     end
   end
 
+  shared_examples 'update the note' do
+    let(:update_params) { { content: 'Happy!' } }
+
+    it 'updates the note and returns it' do
+      note_json = perform_request
+      note.reload
+
+      expect(response.status).to eq 200
+      expect(note_json).to eq note_as_json
+      expect(note.content).to eq 'Happy!'
+    end
+  end
+
   describe 'update' do
     let(:perform_request) { json_put "/api/v1/users/#{user_id}/scrapnotes/#{note.id}", scrapnote: update_params }
 
     context 'with valid parameters' do
-      let(:update_params) { { content: 'Happy!' } }
 
-      it 'updates the note and returns it' do
-        note_json = perform_request
-        note.reload
+      include_examples 'update the note'
 
-        expect(response.status).to eq 200
-        expect(note_json).to eq note_as_json
-        expect(note.content).to eq 'Happy!'
+      context 'when signed user is admin and trying to update another user note' do
+        let(:signed_user) { create :admin_user }
+
+        include_examples 'update the note'
       end
 
       include_examples 'accessing_another_user_resources'
@@ -116,9 +123,7 @@ describe 'Scrapnotes API V1' do
     end
   end
 
-  describe 'destroy' do
-    let(:perform_request) { json_delete "/api/v1/users/#{user_id}/scrapnotes/#{note.id}" }
-
+  shared_examples 'destroy the note' do
     before { note }
 
     it 'destroys the note and returns it' do
@@ -128,6 +133,18 @@ describe 'Scrapnotes API V1' do
         expect(response.status).to eq 200
         expect(note_json).to eq note_as_json
       end.to change(user.scrapnotes, :count).by(-1)
+    end
+  end
+
+  describe 'destroy' do
+    let(:perform_request) { json_delete "/api/v1/users/#{user_id}/scrapnotes/#{note.id}" }
+
+    include_examples 'destroy the note'
+
+    context 'when signed user is admin and trying to destroy another user note' do
+      let(:signed_user) { create :admin_user }
+
+      include_examples 'destroy the note'
     end
 
     include_examples 'accessing_another_user_resources'

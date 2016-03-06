@@ -3,9 +3,9 @@ module Api
     extend ActiveSupport::Concern
     include ::Reflections
 
-    # included do
-    #   before_action :authorize_action
-    # end
+    included do
+      before_action :authorize_action
+    end
 
     def index
       render :index, locals: { model_name_low_plural.to_sym => records_collection }
