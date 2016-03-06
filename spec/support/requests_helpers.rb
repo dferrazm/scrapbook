@@ -1,7 +1,7 @@
 module Requests
   module HTTPHelpers
     def http_auth(user = nil)
-      @current_user = user || create(:user)
+      @current_user = user || create(:admin_user)
       @env ||= {}
       @env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(
         @current_user.username,
