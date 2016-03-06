@@ -1,6 +1,6 @@
 require_relative '../examples/policies_examples'
 
-describe UserPolicy do
+describe MoodPolicy do
   let(:policy) { described_class.new(current_user, nil) }
 
   describe '#index?' do

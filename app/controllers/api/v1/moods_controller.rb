@@ -3,6 +3,8 @@ module Api
     class MoodsController < BaseController
       include Api::CRUD
 
+      before_action :authorize_action
+
       private
 
       def permitted_params
