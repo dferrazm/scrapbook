@@ -8,6 +8,11 @@ describe User do
       expect(build :user, username: nil).to_not be_valid
     end
 
+    it 'is invalid with a taken username' do
+      create :user, username: 'john'
+      expect(build :user, username: 'john').to_not be_valid
+    end
+
     it 'is invalid without a password' do
       expect(build :user, password: nil).to_not be_valid
     end

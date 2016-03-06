@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :user do
-    username 'jdoe'
+    sequence(:username) { |n| "user_#{n}" }
     password 'change123'
     role Role::NORMAL
 
