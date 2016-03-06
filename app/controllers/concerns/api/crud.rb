@@ -1,6 +1,11 @@
 module Api
   module CRUD
+    extend ActiveSupport::Concern
     include ::Reflections
+
+    # included do
+    #   before_action :authorize_action
+    # end
 
     def index
       render :index, locals: { model_name_low_plural.to_sym => records_collection }
@@ -44,6 +49,14 @@ module Api
 
     def respond_with(record)
       render partial: model_name_low_singular, locals: { model_name_low_singular.to_sym => record }
+    end
+
+    def authorizable_resource
+      if params[:id].present?
+        target_record
+      else
+        model_class
+      end
     end
   end
 end

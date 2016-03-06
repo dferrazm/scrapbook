@@ -8,6 +8,8 @@ gem 'sqlite3'
 gem 'jbuilder', '~> 2.0'
 # Used to handle user passwords
 gem 'bcrypt', '~> 3.1.7'
+# Handle authorizations
+gem 'pundit'
 
 group :development, :test do
   gem 'pry-byebug'

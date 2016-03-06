@@ -1,7 +1,7 @@
 describe 'Users API V1' do
   let(:user) { signed_user }
   let(:user_as_json) { user.attributes.slice("id", "username") }
-  let(:signed_user) { create :user, username: 'jdoe' }
+  let(:signed_user) { create :admin_user, username: 'jdoe' }
 
   before { http_auth(signed_user) }
 
@@ -55,12 +55,13 @@ describe 'Users API V1' do
   describe 'update' do
     context 'with valid parameters' do
       it 'updates the user and returns it' do
-        user_json = json_put "/api/v1/users/#{user.id}", user: { username: 'foobar' }
+        user_json = json_put "/api/v1/users/#{user.id}", user: { username: 'foobar', role: Role::GUEST }
         user.reload
 
         expect(response.status).to eq 200
         expect(user_json).to eq user_as_json
         expect(user.username).to eq 'foobar'
+        expect(user.role).to eq Role::GUEST
       end
     end
 
