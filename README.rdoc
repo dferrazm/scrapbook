@@ -1,1 +1,13 @@
 == README
+
+Ruby on Rails sample API app.
+
+It is a sample Scrapbook app where users can create "scrapnotes" and view other users notes.
+
+Users can be:
+
+Admin -> can create/destroy/update and view anything.
+Normal -> can view anything but create/update/destroy only its own notes.
+Guest  -> can only view but cannot create anything.
+
+The app is secured by basic HTTP auth and authorized based on the user role.
